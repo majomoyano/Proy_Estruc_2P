@@ -6,7 +6,7 @@ package com.mycompany.mavenproject1;
 
 /**
  *
- * @author User
+ * @author Majo
  */
 public class Movimiento {
     int fila;
@@ -15,5 +15,13 @@ public class Movimiento {
     public Movimiento(int fila, int columna) {
         this.fila = fila;
         this.columna = columna;
+    }
+    
+    public int obtenerFila() {
+        return fila;
+    }
+
+    public int obtenerColumna() {
+        return columna;
     }
 }

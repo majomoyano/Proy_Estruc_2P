@@ -7,37 +7,48 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  *
- * @author User
+ * @author Majo
  */
+import java.util.List;
+
 public class Minimax {
-    
+
     public Movimiento obtenerMejorMovimiento(Tablero tablero, char jugador) {
-        List<Movimiento> movimientosLegales = obtenerMovimientosLegales(tablero);
+        Nodo raiz = construirArbol(tablero, jugador);
+        List<Nodo> movimientosLegales = raiz.obtenerHijos();
 
         int mejorValor = Integer.MIN_VALUE;
         Movimiento mejorMovimiento = null;
 
-        for (Movimiento movimiento : movimientosLegales) {
-            Tablero nuevoTablero = clonarTablero(tablero);
-            nuevoTablero.hacerMovimiento(movimiento.fila, movimiento.columna, jugador);
-
-            int valorMinimax = minimax(nuevoTablero, 0, false);
+        for (Nodo nodo : movimientosLegales) {
+            int valorMinimax = minimax(nodo, 0, false);
 
             if (valorMinimax > mejorValor) {
                 mejorValor = valorMinimax;
-                mejorMovimiento = movimiento;
+                mejorMovimiento = nodo.obtenerMovimiento();
             }
         }
 
         return mejorMovimiento;
     }
 
-    private List<Movimiento> obtenerMovimientosLegales(Tablero tablero) {
-        // Implementar lógica para obtener movimientos legales
-        return tablero.obtenerMovimientosLegales();
+    private Nodo construirArbol(Tablero tablero, char jugador) {
+        Nodo raiz = new Nodo(null, tablero, jugador); // Modificado para aceptar el nodo padre como null
+        List<Movimiento> movimientosLegales = tablero.obtenerMovimientosLegales();
+
+        for (Movimiento movimiento : movimientosLegales) {
+            Tablero nuevoTablero = clonarTablero(tablero);
+            nuevoTablero.hacerMovimiento(movimiento.fila, movimiento.columna, jugador);
+            Nodo hijo = new Nodo(movimiento, nuevoTablero, (jugador == 'X') ? 'O' : 'X');
+            raiz.agregarHijo(hijo);
+        }
+
+        return raiz;
     }
 
-    private int minimax(Tablero tablero, int profundidad, boolean esMaximizando) {
+    private int minimax(Nodo nodo, int profundidad, boolean esMaximizando) {
+        Tablero tablero = nodo.obtenerTablero();
+
         if (tablero.hayGanador('X')) {
             return -1; // Valor para jugador 'X'
         } else if (tablero.hayGanador('O')) {
@@ -48,23 +59,19 @@ public class Minimax {
 
         if (esMaximizando) {
             int mejorValor = Integer.MIN_VALUE;
-            List<Movimiento> movimientosLegales = tablero.obtenerMovimientosLegales();
+            List<Nodo> movimientosLegales = nodo.obtenerHijos();
 
-            for (Movimiento movimiento : movimientosLegales) {
-                Tablero nuevoTablero = clonarTablero(tablero);
-                nuevoTablero.hacerMovimiento(movimiento.fila, movimiento.columna, 'O');
-                int valor = minimax(nuevoTablero, profundidad + 1, false);
+            for (Nodo hijo : movimientosLegales) {
+                int valor = minimax(hijo, profundidad + 1, false);
                 mejorValor = Math.max(mejorValor, valor);
             }
             return mejorValor;
         } else {
             int mejorValor = Integer.MAX_VALUE;
-            List<Movimiento> movimientosLegales = tablero.obtenerMovimientosLegales();
+            List<Nodo> movimientosLegales = nodo.obtenerHijos();
 
-            for (Movimiento movimiento : movimientosLegales) {
-                Tablero nuevoTablero = clonarTablero(tablero);
-                nuevoTablero.hacerMovimiento(movimiento.fila, movimiento.columna, 'X');
-                int valor = minimax(nuevoTablero, profundidad + 1, true);
+            for (Nodo hijo : movimientosLegales) {
+                int valor = minimax(hijo, profundidad + 1, true);
                 mejorValor = Math.min(mejorValor, valor);
             }
             return mejorValor;
@@ -72,7 +79,6 @@ public class Minimax {
     }
 
     private Tablero clonarTablero(Tablero tablero) {
-        // Implementar la lógica para clonar el tablero
         Tablero nuevoTablero = new Tablero();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -81,6 +87,4 @@ public class Minimax {
         }
         return nuevoTablero;
     }
-
-    
 }
