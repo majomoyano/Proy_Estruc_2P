@@ -8,6 +8,8 @@ import java.util.List;
 /**
  *
  * @author Majo
+ * Minimax, busca el mejor movimiento para la computadora 
+ * considerando el peor escenario posible por parte del jugador humano.
  */
 import java.util.List;
 

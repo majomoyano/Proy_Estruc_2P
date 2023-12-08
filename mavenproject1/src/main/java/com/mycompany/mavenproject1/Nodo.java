@@ -9,6 +9,8 @@ package com.mycompany.mavenproject1;
  * @author Majo
  *  cada instancia de la clase Nodo representa un 
  * estado del tablero y tiene una lista de nodos hijos que representan los posibles movimientos a partir de ese estado.
+ * 
+ * La clase Nodo y el método construirArbol en Minimax se encargan de generar posibles estados y construir el árbol de juego.
  */
 
 import java.util.ArrayList;
