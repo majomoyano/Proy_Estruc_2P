@@ -13,14 +13,38 @@ import java.util.List;
 public class TresEnRaya {
 
     public static void main(String[] args) {
-        // Ejemplo de uso
+        
         Tablero tablero = new Tablero();
-        tablero.hacerMovimiento(1, 1, 'X'); // Movimiento del jugador humano
-        tablero.mostrarTablero();
-
+    
         Minimax minimax = new Minimax();
-        Movimiento mejorMovimiento = minimax.obtenerMejorMovimiento(tablero, 'O');
-        tablero.hacerMovimiento(mejorMovimiento.fila, mejorMovimiento.columna, 'O'); // Movimiento de la computadora
-        tablero.mostrarTablero();
+        // Supongamos que el juego continúa hasta que alguien gane o el tablero se llene
+        while (!tablero.estaCompleto() && !tablero.hayGanador('X') && !tablero.hayGanador('O')) {
+            
+            // Movimiento del jugador humano
+            tablero.hacerMovimiento(1, 1, 'X'); 
+            tablero.mostrarTablero();
+            
+            // Mostrar recomendaciones después del movimiento del jugador humano
+            if (!tablero.estaCompleto()) {
+                Movimiento recomendacion = minimax.recomendarMovimientoHumano(tablero, 'X');
+                System.out.println("Recomendación: mover en fila " + recomendacion.obtenerFila() + ", columna " + recomendacion.obtenerColumna());
+            }
+            
+            //movimiento de la computadora
+            if (!tablero.estaCompleto()) {
+                Movimiento mejorMovimiento = minimax.obtenerMejorMovimiento(tablero, 'O');
+                tablero.hacerMovimiento(mejorMovimiento.fila, mejorMovimiento.columna, 'O');
+                tablero.mostrarTablero();
+            }
+        
+        }
+        // Determinar el ganador o declarar un empate
+        if (tablero.hayGanador('X')) {
+            System.out.println("¡El jugador X ha ganado!");
+        } else if (tablero.hayGanador('O')) {
+            System.out.println("¡La computadora ha ganado!");
+        } else {
+            System.out.println("Es un empate.");
+        }
     }
 }

@@ -89,4 +89,25 @@ public class Minimax {
         }
         return nuevoTablero;
     }
+    
+    //metodo opcional:Hacer recomendaciones al usuario humano sobre qué movimiento le conviene hacer
+    public Movimiento recomendarMovimientoHumano(Tablero tablero, char jugadorHumano) {
+    Nodo raiz = construirArbol(tablero, jugadorHumano);
+    List<Nodo> movimientosLegales = raiz.obtenerHijos();
+
+    int mejorValor = Integer.MAX_VALUE; // Cambio aquí ya que buscamos minimizar el valor para el humano
+    Movimiento recomendacion = null;
+
+    for (Nodo nodo : movimientosLegales) {
+        int valorMinimax = minimax(nodo, 0, true); // Cambio aquí para evaluar desde la perspectiva del humano
+
+        if (valorMinimax < mejorValor) {
+            mejorValor = valorMinimax;
+            recomendacion = nodo.obtenerMovimiento();
+        }
+    }
+
+    return recomendacion;
+}
+
 }
